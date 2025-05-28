@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "ESNext",
+    "target": "ES2020",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["main.ts"],
+  "exclude": ["node_modules", "dist", "frontend", "eslint.config.js"]
+}
