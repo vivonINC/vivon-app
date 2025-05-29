@@ -1,29 +1,38 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import Home from './views/Home';
+import Sidebar from './components/sidebar/Sidebar';
+import placeholder from './assets/placeholder.png';
 
 function App() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex space-x-8">
-              <Link
-                to="/"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-blue-600"
-              >
-                Home
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+  // Mock data - in a real app, this would come from props, context, or API
+  const user = {
+    username: 'Username',
+    avatar: placeholder,
+    status: 'Fucking about..',
+  };
 
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </main>
+  const friends = [
+    {
+      id: '1',
+      name: 'friend 1',
+      avatar: placeholder,
+      lastMessage: 'Oh yeah.. heard about that',
+    },
+    {
+      id: '2',
+      name: 'friend 2',
+      avatar: placeholder,
+      lastMessage: 'what?',
+    },
+    {
+      id: '3',
+      name: 'friend 3',
+      avatar: placeholder,
+      lastMessage: "lol. That's kek",
+    },
+  ];
+
+  return (
+    <div className="absolute inset h-screen w-screen overflow-hidden bg-stone-900 p-2">
+      <Sidebar user={user} friends={friends} />
     </div>
   );
 }

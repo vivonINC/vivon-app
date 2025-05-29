@@ -7,6 +7,9 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     height: 800,
     width: 1200,
+    minHeight: 600,
+    minWidth: 800,
+    backgroundColor: '#0c0a09', // Tailwind's stone-900
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
