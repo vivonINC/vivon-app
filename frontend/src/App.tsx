@@ -1,4 +1,5 @@
 import Sidebar from './components/sidebar/Sidebar';
+import TextChat from './components/TextChat';
 import placeholder from './assets/placeholder.png';
 
 function App() {
@@ -31,8 +32,9 @@ function App() {
   ];
 
   return (
-    <div className="absolute inset h-screen w-screen overflow-hidden bg-stone-900 p-2">
+    <div className="flex absolute inset h-screen w-screen overflow-hidden bg-stone-900 p-2">
       <Sidebar user={user} friends={friends} />
+      <TextChat/>
     </div>
   );
 }
