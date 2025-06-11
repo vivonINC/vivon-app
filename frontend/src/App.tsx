@@ -1,5 +1,7 @@
-import { Routes, Route } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Sidebar from './components/sidebar/Sidebar';
+import ChatView from './views/ChatView';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -8,20 +10,22 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen">
-        <main className="bg-stone-950 text-white">
+      <div className="bg-stone-950 flex flex-row min-h-screen p-2">
+        <Sidebar />
+        <main className="bg-stone-950 text-white w-full">
           <Routes>
             <Route path="/" element={<div>Home Route</div>} />
+            <Route path="/chat/:friendId" element={<ChatView />} />
           </Routes>
         </main>
       </div>
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;

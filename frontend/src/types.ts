@@ -247,7 +247,13 @@ export interface Notification {
 
 export type NotificationType = 'message' | 'friend_request' | 'group_invite' | 'mention' | 'system';
 export type ConnectionState = 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
-export type ModalType = 'user_settings' | 'create_group' | 'invite_friend' | 'user_profile' | 'channel_settings' | 'group_settings';
+export type ModalType =
+  | 'user_settings'
+  | 'create_group'
+  | 'invite_friend'
+  | 'user_profile'
+  | 'channel_settings'
+  | 'group_settings';
 
 // ===== ZUSTAND STATE (UI State) =====
 export interface UIState {
@@ -257,21 +263,21 @@ export interface UIState {
   selectedGroup?: string;
   selectedChannel?: string;
   selectedDM?: string;
-  
+
   // Theme and appearance
   userSettings: UserSettings;
-  
+
   // Modals and overlays
   activeModal?: ModalType;
   modalData?: any;
-  
+
   // Search
   searchQuery: string;
-  
+
   // UI flags
   sidebarCollapsed: boolean;
   showMemberList: boolean;
-  
+
   // Actions
   setActiveTab: (tab: SidebarTab) => void;
   setSelectedFriend: (id?: string) => void;
@@ -290,22 +296,22 @@ export interface ReduxState {
   typingUsers: { [channelId: string]: string[] };
   voiceStates: { [userId: string]: VoiceState };
   currentVoiceChannel?: string;
-  
+
   // Connection state
   isConnected: boolean;
   connectionState: ConnectionState;
-  
+
   // Notifications
   notifications: Notification[];
   unreadNotifications: number;
-  
+
   // Message cache (for offline support)
   messageCache: { [channelId: string]: Message[] };
-  
+
   // Optimistic updates
   pendingMessages: { [tempId: string]: Message };
   failedMessages: string[];
-  
+
   // WebSocket/real-time data
   lastHeartbeat?: Date;
   reconnectAttempts: number;
@@ -365,7 +371,7 @@ export interface ResetReconnectAction {
   type: 'RESET_RECONNECT_ATTEMPTS';
 }
 
-export type ReduxAction = 
+export type ReduxAction =
   | SetTypingUsersAction
   | SetVoiceStateAction
   | AddNotificationAction
