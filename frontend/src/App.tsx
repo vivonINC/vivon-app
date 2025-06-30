@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoginView from "./views/LoginView.tsx";
 import Home from './views/HomeView.tsx';
 import TestPage from './views/TestPage.tsx';
+import Register  from './views/RegisterView.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,6 +21,7 @@ function App() {
         <main className="min-h-screen bg-stone-950 text-white">
           <Routes>
             <Route path="/" element={<LoginView/>} />
+            <Route path = "/register" element={<Register/>} />
             <Route path = "/home" element={<Home/>} />
             <Route path = "/testPage" element={<TestPage/>} />
           </Routes>
