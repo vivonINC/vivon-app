@@ -9,6 +9,20 @@ export default defineConfig({
     outDir: 'dist',
   },
   server: {
-    open: false, // Don't auto-open browser
+    open: false,
+    proxy: {
+      '/auth': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path, // Ensure path isn't modified
+      },
+      // You might also want to proxy other API routes
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
