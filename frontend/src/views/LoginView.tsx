@@ -5,6 +5,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault(); // Prevent page reload
@@ -24,7 +25,7 @@ export default function Login() {
 
     }
     else{
-      console.log(response.status.toString)
+      setError('Not a valid login')
     }
      //Not safe to store in local storage?
   };
@@ -44,6 +45,7 @@ export default function Login() {
         </button>
       </form>
       <button onClick={() => navigate("/register")} className=' mt-2 block w-1/2 mx-auto bg-blue-400 rounded-2xl border border-black'>Registration</button>
+      <p className='text-red-600 block w-fit h-5 mx-auto'>{error}</p>
     </div>
   );
 }

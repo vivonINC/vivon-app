@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./SidebarView";
 
 export default function Home() {
   const nav = useNavigate();
@@ -7,6 +8,7 @@ export default function Home() {
   }
   return (
     <div className="p-8">
+      <Sidebar/>
       <h1 className="text-3xl font-bold text-gray-900">Home view</h1>
       <p className="mt-4 text-gray-600">Vivon!</p>
       <button onClick={handleClick} className="bg-white text-amber-300">Go to Test page</button>
