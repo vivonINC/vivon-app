@@ -14,8 +14,7 @@ export default function SidebarUserSection() {
             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-stone-900" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm text-white font-medium">John Doe</span>
-            <span className="text-xs text-stone-400">#1234</span>
+            <span className="text-sm text-white font-medium">{sessionStorage.getItem("username")}</span>
           </div>
         </div>
 

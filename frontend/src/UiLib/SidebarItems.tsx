@@ -46,7 +46,7 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
   const fetchFriends = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch('/api/users/friends', {
         headers: {
@@ -68,8 +68,8 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
   const fetchFriendRequests = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const currentUserId = localStorage.getItem("myID");
+      const token = sessionStorage.getItem("token");
+      const currentUserId = sessionStorage.getItem("myID");
 
       const response = await fetch(`/api/users/incFriendRequests?id=${currentUserId}`, {
         headers: {
@@ -90,8 +90,8 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
 
   const handleAcceptRequest = async (friendId: string) => {
     try {
-      const token = localStorage.getItem("token");
-      const currentUserId = localStorage.getItem("myID");
+      const token = sessionStorage.getItem("token");
+      const currentUserId = sessionStorage.getItem("myID");
 
       const response = await fetch('/api/users/acceptFriendRequest', {
         method: 'POST',
@@ -116,8 +116,8 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
 
   const handleDeclineRequest = async (friendId: string) => {
     try {
-      const token = localStorage.getItem("token");
-      const currentUserId = localStorage.getItem("myID");
+      const token = sessionStorage.getItem("token");
+      const currentUserId = sessionStorage.getItem("myID");
 
       const response = await fetch('/api/users/declineFriendRequest', {
         method: 'POST',

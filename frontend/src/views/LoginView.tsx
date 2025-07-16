@@ -20,22 +20,35 @@ export default function Login() {
 
     const data = await response.json();
     if(response.ok){
-      window.localStorage.setItem("token", data.token)
+      sessionStorage.setItem("token", data.token)
 
       const response = await fetch("/api/users/me", {
       headers: {
-        Authorization: `Bearer ${data.token}`
+        "Authorization": `Bearer ${data.token}`
       }
     });
     const text = await response.text();
-    localStorage.setItem("myID", text);
+    sessionStorage.setItem("myID", text);
+
+    const res = await fetch(`/api/users/getUsernameAndAvatar?ids=${text}`, {
+      headers: {
+        "Authorization": `Bearer ${data.token}`
+      },
+    });
+
+    const resData = await res.json();
+    const { username, avatar } = resData[0];
+
+    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("avatar", avatar);
+
     navigate("/home");
 
     }
     else{
       setError('Not a valid login')
     }
-     //Not safe to store in local storage?
+     //Not safe to store token in local storage?
   };
 
   return (

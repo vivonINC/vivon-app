@@ -12,8 +12,8 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
-    const id = localStorage.getItem("myID");
+    const token = sessionStorage.getItem("token");
+    const id = sessionStorage.getItem("myID");
 
     if (!token || !id) {
       setError("Authentication error. Please log in again.");

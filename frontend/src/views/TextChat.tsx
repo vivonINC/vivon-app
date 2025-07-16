@@ -23,7 +23,7 @@ export default function TextChat({ conversationId = 1, chatName }: TextChatProps
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const fetchMessages = async () => {
       try {
         setLoading(true);
