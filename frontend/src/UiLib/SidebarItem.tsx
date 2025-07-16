@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 interface SidebarItemProps {
   avatar: string;
   name: string;
@@ -7,6 +5,7 @@ interface SidebarItemProps {
   userId: string;
   lastMessage?: string;
   lastMessageDate?: string;
+  onChatSelect: (userId: string, userName: string) => void;
 }
 
 export default function SidebarItem({
@@ -16,11 +15,10 @@ export default function SidebarItem({
   userId,
   lastMessage,
   lastMessageDate,
+  onChatSelect,
 }: SidebarItemProps) {
-  const navigate = useNavigate();
-
   const handleClick = () => {
-    navigate(`/chat/${userId}`);
+    onChatSelect(userId, name);
   };
 
   return (

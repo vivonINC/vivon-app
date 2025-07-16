@@ -2,8 +2,7 @@
 
 export interface User {
   id: string;
-  username: string;
-  displayName: string;
+  userName: string;
   avatar: string;
   status: UserStatus;
   isOnline: boolean;

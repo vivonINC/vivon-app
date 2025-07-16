@@ -1,16 +1,23 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Sidebar from "./SidebarView";
 import TextChat from "./TextChat";
 
 export default function Home() {
-  const nav = useNavigate();
-  function handleClick(){
-    nav("/testPage")
-  }
+  const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
+  const [selectedChatName, setSelectedChatName] = useState<string>("");
+
+  const handleChatSelect = (userId: string, userName: string) => {
+    setSelectedChatId(parseInt(userId, 10));
+    setSelectedChatName(userName);
+  };
+
   return (
     <div className="p-8 flex">
-      <Sidebar/>
-      <TextChat/>
+      <Sidebar onChatSelect={handleChatSelect} />
+    <TextChat 
+      conversationId={selectedChatId ?? undefined}
+      chatName={selectedChatName}
+    />
     </div>
   );
 }

@@ -15,9 +15,10 @@ interface Message {
 
 interface TextChatProps {
   conversationId?: number;
+  chatName?: string; 
 }
 
-export default function TextChat({ conversationId = 1 }: TextChatProps) {
+export default function TextChat({ conversationId = 1, chatName }: TextChatProps) {
   const [messages, setMessages] = useState<Message[]>([]); // Specify the type here
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,6 @@ export default function TextChat({ conversationId = 1 }: TextChatProps) {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
           },
         });
 

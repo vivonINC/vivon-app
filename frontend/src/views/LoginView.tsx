@@ -21,7 +21,15 @@ export default function Login() {
     const data = await response.json();
     if(response.ok){
       window.localStorage.setItem("token", data.token)
-      navigate("/home")
+
+      const response = await fetch("/api/users/me", {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    });
+    const text = await response.text();
+    localStorage.setItem("myID", text);
+    navigate("/home");
 
     }
     else{
