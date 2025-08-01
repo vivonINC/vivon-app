@@ -5,21 +5,22 @@ import TextChat from "./TextChat";
 export default function Home() {
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
   const [selectedChatName, setSelectedChatName] = useState<string>("");
+  const [selectedConversationType, setSelectedConversationType] = useState<string>("friend");
 
-  const handleChatSelect = async (idOrFriendId: string, name: string) => {
-    // Check if this is a group conversation (numeric ID that's likely a conversation ID)
-    // or a friend ID that needs conversation lookup
-    const isGroupConversation = await isExistingConversation(idOrFriendId);
-    
-    if (isGroupConversation) {
-      // This is already a conversation ID (group)
-      setSelectedConversationId(parseInt(idOrFriendId));
+  const handleChatSelect = async (
+    id: string, 
+    name: string, 
+    type: string,
+  ) => {
+    if (type === 'group') {
+      setSelectedConversationId(parseInt(id));
       setSelectedChatName(name);
-    } else {
-      // This is a friend ID, need to find/create direct conversation
-      const conversationId = await findOrCreateConversation(idOrFriendId);
+      setSelectedConversationType('group');
+    } else if (type === 'friend') {
+      const conversationId = await findOrCreateConversation(id); // id = friendId
       setSelectedConversationId(conversationId);
       setSelectedChatName(name);
+      setSelectedConversationType('friend');
     }
   };
 
@@ -35,7 +36,6 @@ export default function Home() {
 
     return res.ok ? await res.json() : false;
   };
-
 
   const findOrCreateConversation = async (friendId: string): Promise<number> => {
     try {
@@ -81,6 +81,7 @@ export default function Home() {
     <div className="p-8 flex w-screen h-screen relative">
       <Sidebar onChatSelect={handleChatSelect} />
       <TextChat 
+        conversationType={selectedConversationType}
         conversationId={selectedConversationId}
         chatName={selectedChatName}
       />

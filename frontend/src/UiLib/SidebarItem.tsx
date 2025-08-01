@@ -3,9 +3,10 @@ interface SidebarItemProps {
   name: string;
   isOnline?: boolean;
   userId: string;
+  type: string;
   lastMessage?: string;
   lastMessageDate?: string;
-  onChatSelect: (userId: string, userName: string) => void;
+  onChatSelect: (userId: string, userName: string, type: string) => void;
 }
 
 export default function SidebarItem({
@@ -15,10 +16,11 @@ export default function SidebarItem({
   userId,
   lastMessage,
   lastMessageDate,
+  type,
   onChatSelect,
 }: SidebarItemProps) {
   const handleClick = () => {
-    onChatSelect(userId, name);
+    onChatSelect(userId, name, type);
   };
 
   return (

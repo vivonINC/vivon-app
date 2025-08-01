@@ -2,33 +2,62 @@ import { useState } from 'react';
 import SidebarUserSection from '../UiLib/SidebarUserSection';
 import SidebarItems from '../UiLib/SidebarItems';
 import AddFriendModal from './AddFriendModal';
+import CreateGroupModal from './CreateGroupModal';
 
 interface SidebarProps {
-  onChatSelect: (userId: string, userName: string) => void;
+  onChatSelect: (id: string, name: string, type: string) => void;
 }
 
 export default function Sidebar({ onChatSelect }: SidebarProps) {
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>('friends');
+
+  const handleTabChange = (tab: 'friends' | 'groups' | 'requests') => {
+    setActiveTab(tab);
+  };
+
+  const handleButtonClick = () => {
+    if (activeTab === 'groups') {
+      setShowCreateGroupModal(true);
+    } else {
+      setShowAddFriendModal(true);
+    }
+  };
+
+  const getButtonText = () => {
+    if(activeTab == "groups"){
+      return "Create group"
+    } else{
+      return"Add friend"
+    }
+  };
 
   return (
     <>
       <div className="flex flex-col w-96 not-first:bg-stone-900">
-        <SidebarItems onChatSelect={onChatSelect} />
+        <SidebarItems 
+          onChatSelect={onChatSelect} 
+          onTabChange={handleTabChange}
+        />
         <div className="mt-auto">
           <SidebarUserSection />
         </div>
         <div className="p-4">
           <button
             className='bg-white text-black px-4 py-2 rounded w-full'
-            onClick={() => setShowAddFriendModal(true)}
+            onClick={handleButtonClick}
           >
-            Add Friend
+            {getButtonText()}
           </button>
         </div>
       </div>
       
       {showAddFriendModal && (
         <AddFriendModal onClose={() => setShowAddFriendModal(false)} />
+      )}
+      {showCreateGroupModal && (
+        <CreateGroupModal onClose={() => setShowCreateGroupModal(false)} />
       )}
     </>
   );

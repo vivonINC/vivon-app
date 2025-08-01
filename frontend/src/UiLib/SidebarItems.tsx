@@ -11,10 +11,11 @@ interface Group {
 }
 
 interface SidebarItemsProps {
-  onChatSelect: (userId: string, userName: string) => void;
+  onChatSelect: (userId: string, userName: string, type: string) => void;
+  onTabChange: (tab: 'friends' | 'groups' | 'requests') => void;
 }
 
-export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
+export default function SidebarItems({ onChatSelect, onTabChange }: SidebarItemsProps) {
   const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>('friends');
   const [searchQuery, setSearchQuery] = useState('');
   const [friends, setFriends] = useState<User[]>([]);
@@ -36,6 +37,11 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
   const filteredRequests = friendRequests.filter(user =>
     user.userName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleTabClick = (tab: 'friends' | 'groups' | 'requests') => {
+    setActiveTab(tab);
+    onTabChange(tab); // Notify parent component
+  };
 
   useEffect(() => {
     if (activeTab === 'friends') {
@@ -166,10 +172,12 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
     }
   };
 
+  const handleFriendSelect = (userId: string, userName: string) => {
+    onChatSelect(userId, userName, 'friend');
+  };
+
   const handleGroupSelect = (conversationId: string, groupName: string) => {
-    // For groups, we'll pass the conversation ID directly
-    // You might want to modify your onChatSelect to handle this differently
-    onChatSelect(conversationId, groupName);
+    onChatSelect(conversationId, groupName, 'group');
   };
 
   filteredFriends.forEach(n=>{console.log(n.id)})
@@ -180,19 +188,19 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
         <div className="flex bg-stone-800 rounded-lg p-1">
           <button
             className={`flex-1 px-2 py-1.5 text-xs rounded-md transition-colors ${activeTab === 'friends' ? activeTabClass : inactiveTabClass}`}
-            onClick={() => setActiveTab('friends')}
+            onClick={() => handleTabClick('friends')}
           >
             Friends
           </button>
           <button
             className={`flex-1 px-2 py-1.5 text-xs rounded-md transition-colors ${activeTab === 'groups' ? activeTabClass : inactiveTabClass}`}
-            onClick={() => setActiveTab('groups')}
+            onClick={() => handleTabClick('groups')}
           >
             Groups
           </button>
           <button
             className={`flex-1 px-2 py-1.5 text-xs rounded-md transition-colors relative ${activeTab === 'requests' ? activeTabClass : inactiveTabClass}`}
-            onClick={() => setActiveTab('requests')}
+            onClick={() => handleTabClick('requests')}
           >
             Invites
             {friendRequests.length > 0 && (
@@ -224,12 +232,13 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
             ) : (
               filteredFriends.map(user => (
                 <SidebarItem
+                  type='friend' //direct or friend?
                   key={user.id}
                   avatar={user.avatar}
                   name={user.userName}
                   isOnline={user.isOnline}
                   userId={user.id}
-                  onChatSelect={onChatSelect}
+                  onChatSelect={(userId, userName) => onChatSelect(userId, userName, 'friend')}
                 />
               ))
             )}
@@ -245,6 +254,7 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
             ) : (
               filteredGroups.map(group => (
                 <SidebarItem
+                  type='group'
                   key={group.conversation_id}
                   avatar={"temp"} // Groups might not have avatars, or you can add a default group avatar
                   name={group.conversation_name}
