@@ -3,11 +3,12 @@ import type { User } from '../types';
 import SidebarItem from './SidebarItem';
 import FriendRequestItem from './FriendRequestItem';
 
-const mockGroups = [
-  { id: '1', name: 'Gaming Squad', avatar: '../avatars/8bithero.png' },
-  { id: '2', name: 'Study Group', avatar: '../assets/avatars/deadlock.png' },
-  { id: '3', name: 'Project Team', avatar: '../assets/avatars/squid.png' },
-];
+interface Group {
+  conversation_id: number;
+  conversation_name: string;
+  conversation_type: string;
+  last_message_time: string | null;
+}
 
 interface SidebarItemsProps {
   onChatSelect: (userId: string, userName: string) => void;
@@ -17,6 +18,7 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
   const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>('friends');
   const [searchQuery, setSearchQuery] = useState('');
   const [friends, setFriends] = useState<User[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [friendRequests, setFriendRequests] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +29,10 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
     user.userName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredGroups = groups.filter(group =>
+    group.conversation_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const filteredRequests = friendRequests.filter(user =>
     user.userName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -34,11 +40,9 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
   useEffect(() => {
     if (activeTab === 'friends') {
       fetchFriends();
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (activeTab === 'requests') {
+    } else if (activeTab === 'groups') {
+      fetchGroups();
+    } else if (activeTab === 'requests') {
       fetchFriendRequests();
     }
   }, [activeTab]);
@@ -60,6 +64,29 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
       }
     } catch (error) {
       console.error('Error fetching friends:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchGroups = async () => {
+    setLoading(true);
+    try {
+      const token = sessionStorage.getItem("token");
+      const currentUserId = sessionStorage.getItem("myID");
+
+      const response = await fetch(`/api/messages/getConversationGroups?userID=${currentUserId}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const groupsData = await response.json();
+        setGroups(groupsData);
+      }
+    } catch (error) {
+      console.error('Error fetching groups:', error);
     } finally {
       setLoading(false);
     }
@@ -139,6 +166,14 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
     }
   };
 
+  const handleGroupSelect = (conversationId: string, groupName: string) => {
+    // For groups, we'll pass the conversation ID directly
+    // You might want to modify your onChatSelect to handle this differently
+    onChatSelect(conversationId, groupName);
+  };
+
+  filteredFriends.forEach(n=>{console.log(n.id)})
+
   return (
     <div className="flex flex-col flex-1 min-h-0">
       <div className="p-2 space-y-3">
@@ -203,15 +238,21 @@ export default function SidebarItems({ onChatSelect }: SidebarItemsProps) {
 
         {activeTab === 'groups' && (
           <>
-            {mockGroups.map(group => (
-              <SidebarItem
-                key={group.id}
-                avatar={group.avatar}
-                name={group.name}
-                userId={group.id}
-                onChatSelect={onChatSelect}
-              />
-            ))}
+            {loading ? (
+              <div className="text-center text-stone-400 py-4">Loading...</div>
+            ) : filteredGroups.length === 0 ? (
+              <div className="text-center text-stone-400 py-4">No groups yet</div>
+            ) : (
+              filteredGroups.map(group => (
+                <SidebarItem
+                  key={group.conversation_id}
+                  avatar={"temp"} // Groups might not have avatars, or you can add a default group avatar
+                  name={group.conversation_name}
+                  userId={group.conversation_id.toString()}
+                  onChatSelect={handleGroupSelect}
+                />
+              ))
+            )}
           </>
         )}
 

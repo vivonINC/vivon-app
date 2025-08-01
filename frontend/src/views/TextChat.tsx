@@ -1,60 +1,56 @@
 import { useState, useEffect } from "react";
 import TextChatItem from "../UiLib/TextChatItem";
 import temp1 from "../assets/avatars/genji.png";
-import temp2 from "../assets/avatars/winston.png";
-
-// Define the Message interface
-interface Message {
-  id: number;
-  sender_id: number;
-  content: string;
-  created_at: string;
-  username: string;
-  avatar: string | null;
-}
+import { useWebSocket, type Message } from "../useWebSocket";
 
 interface TextChatProps {
-  conversationId?: number;
-  chatName?: string; 
+  conversationId: number | null;
+  chatName: string; 
 }
 
-export default function TextChat({ conversationId = 1, chatName }: TextChatProps) {
-  const [messages, setMessages] = useState<Message[]>([]); // Specify the type here
+export default function TextChat({ conversationId, chatName }: TextChatProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [inputText, setInputText] = useState("");
+  
+  const { messages, isConnected, sendMessage, loadInitialMessages, setMessages } = useWebSocket(conversationId);
+
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/messages/last25?conversationID=${conversationId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+    if (!conversationId) {
+      setLoading(false);
+      setMessages([]);
+      return;
+    }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: Message[] = await response.json(); // Type the response
-        setMessages(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-        console.error('Error fetching messages:', err);
-      } finally {
+    setLoading(true);
+    loadInitialMessages(conversationId)
+      .then(() => setLoading(false))
+      .catch(err => {
+        setError(err.message);
         setLoading(false);
-      }
-    };
-
-    fetchMessages();
+      });
   }, [conversationId]);
+
+  const handleSend = (content: string) => {
+    if (!content.trim()) return;
+    
+    sendMessage(content);
+    setInputText("");
+  };
+
+  // No conversation selected
+  if (!conversationId) {
+    return (
+      <div className="m-3 flex flex-col items-center justify-center h-full">
+        <div className="text-center text-gray-500">Select a friend to start chatting</div>
+      </div>
+    );
+  }
 
   // Loading state
   if (loading) {
     return (
-      <div className="m-3 flex flex-col">
+      <div className="m-3 flex flex-col items-center justify-center h-full">
         <div className="text-center">Loading messages...</div>
       </div>
     );
@@ -63,33 +59,54 @@ export default function TextChat({ conversationId = 1, chatName }: TextChatProps
   // Error state
   if (error) {
     return (
-      <div className="m-3 flex flex-col">
+      <div className="m-3 flex flex-col items-center justify-center h-full">
         <div className="text-center text-red-500">Error: {error}</div>
       </div>
     );
   }
 
-  // Empty state
-  if (messages.length === 0) {
-    return (
-      <div className="m-3 flex flex-col">
-        <div className="text-center text-gray-500">No messages yet</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="m-3 flex flex-col">
-      {messages.map((message: Message) => ( // Type is now explicit
-        <div key={message.id} className="mb-5">
-          <TextChatItem 
-            avatar={message.avatar || temp1} // Use the avatar from backend
-            date={message.created_at ? new Date(message.created_at).toLocaleDateString() : ''}
-            text={message.content} // This should work now
-            name={message.username || 'Unknown'} // Use username from backend
-          />
-        </div>
-      ))}
+    <div className="m-3 flex flex-col h-full">
+      <div className="mb-4 p-2 border-b flex items-center justify-between">
+        <h2 className="text-lg font-semibold">{chatName}</h2>
+        <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} 
+             title={isConnected ? 'Connected' : 'Disconnected'} />
+      </div>
+      
+      <div className="flex-1 overflow-y-auto mb-4">
+        {messages.length === 0 ? (
+          <div className="text-center text-gray-500 mt-8">
+            No messages yet with {chatName}
+          </div>
+        ) : (
+          messages.map((message: Message) => (
+            <div key={message.id} className="mb-5">
+              <TextChatItem 
+                avatar={message.avatar || temp1}
+                date={message.created_at ? new Date(message.created_at).toLocaleDateString() : ''}
+                text={message.content}
+                name={message.username || 'Unknown'}
+              />
+            </div>
+          ))
+        )}
+      </div>
+      
+      <div className="mt-auto">
+        <input 
+          type="text" 
+          value={inputText} 
+          onChange={(e) => setInputText(e.target.value)} 
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSend(inputText);
+            }
+          }} 
+          className="w-full p-2 bg-stone-700 border border-stone-500 rounded-lg" 
+          placeholder="Type a message..."
+          disabled={!isConnected}
+        />
+      </div>
     </div>
   );
 }
