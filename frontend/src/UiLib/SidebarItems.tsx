@@ -12,11 +12,11 @@ interface Group {
 
 interface SidebarItemsProps {
   onChatSelect: (userId: string, userName: string, type: string) => void;
+  activeTab: "friends"|"groups"|"requests";
   onTabChange: (tab: 'friends' | 'groups' | 'requests') => void;
 }
 
-export default function SidebarItems({ onChatSelect, onTabChange }: SidebarItemsProps) {
-  const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>('friends');
+export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: SidebarItemsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [friends, setFriends] = useState<User[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
@@ -39,7 +39,6 @@ export default function SidebarItems({ onChatSelect, onTabChange }: SidebarItems
   );
 
   const handleTabClick = (tab: 'friends' | 'groups' | 'requests') => {
-    setActiveTab(tab);
     onTabChange(tab); // Notify parent component
   };
 
@@ -52,6 +51,12 @@ export default function SidebarItems({ onChatSelect, onTabChange }: SidebarItems
       fetchFriendRequests();
     }
   }, [activeTab]);
+
+  // Separate useEffect to fetch friend requests count for badge
+  // This runs once when component mounts to show the notification badge
+  useEffect(() => {
+    fetchFriendRequests();
+  }, []);
 
   const fetchFriends = async () => {
     setLoading(true);
@@ -172,15 +177,12 @@ export default function SidebarItems({ onChatSelect, onTabChange }: SidebarItems
     }
   };
 
-  const handleFriendSelect = (userId: string, userName: string) => {
-    onChatSelect(userId, userName, 'friend');
-  };
-
   const handleGroupSelect = (conversationId: string, groupName: string) => {
     onChatSelect(conversationId, groupName, 'group');
   };
 
-  filteredFriends.forEach(n=>{console.log(n.id)})
+  // Debug logging (this is fine in component body since it doesn't cause side effects)
+  console.log('Friend IDs:', filteredFriends.map(f => f.id));
 
   return (
     <div className="flex flex-col flex-1 min-h-0">

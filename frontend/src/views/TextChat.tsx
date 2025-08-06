@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TextChatItem from "../UiLib/TextChatItem";
 import temp1 from "../assets/avatars/genji.png";
 import { useWebSocket, type Message } from "../useWebSocket";
@@ -17,6 +17,30 @@ export default function TextChat({ conversationId, chatName, conversationType }:
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   
   const { messages, isConnected, sendMessage, loadInitialMessages, setMessages } = useWebSocket(conversationId);
+  
+  // Ref for the messages container
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to bottom
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Auto-scroll when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Small delay to ensure DOM has updated
+      setTimeout(scrollToBottom, 100);
+    }
+  }, [messages]);
+
+  // Scroll to bottom when conversation changes and initial messages load
+  useEffect(() => {
+    if (!loading && messages.length > 0) {
+      setTimeout(scrollToBottom, 100);
+    }
+  }, [loading, conversationId]);
 
   useEffect(() => {
     if (!conversationId) {
@@ -91,22 +115,29 @@ export default function TextChat({ conversationId, chatName, conversationType }:
                title={isConnected ? 'Connected' : 'Disconnected'} />
         </div>
         
-        <div className="flex-1 overflow-y-auto mb-4">
+        <div 
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto mb-4 scroll-smooth"
+        >
           {messages.length === 0 ? (
             <div className="text-center text-gray-500 mt-8">
               No messages yet with {chatName}
             </div>
           ) : (
-            messages.map((message: Message) => (
-              <div key={message.id} className="mb-5">
-                <TextChatItem 
-                  avatar={message.avatar || temp1}
-                  date={message.created_at ? new Date(message.created_at).toLocaleDateString() : ''}
-                  text={message.content}
-                  name={message.username || 'Unknown'}
-                />
-              </div>
-            ))
+            <>
+              {messages.map((message: Message) => (
+                <div key={message.id} className="mb-5">
+                  <TextChatItem 
+                    avatar={message.avatar || temp1}
+                    date={message.created_at ? new Date(message.created_at).toLocaleDateString() : ''}
+                    text={message.content}
+                    name={message.username || 'Unknown'}
+                  />
+                </div>
+              ))}
+              {/* Invisible div at the bottom to scroll to */}
+              <div ref={messagesEndRef} />
+            </>
           )}
         </div>
         

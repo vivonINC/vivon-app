@@ -6,12 +6,14 @@ import CreateGroupModal from './CreateGroupModal';
 
 interface SidebarProps {
   onChatSelect: (id: string, name: string, type: string) => void;
+  openWithTab: "friends" | "groups" | "requests";
 }
 
-export default function Sidebar({ onChatSelect }: SidebarProps) {
+export default function Sidebar({ onChatSelect, openWithTab }: SidebarProps) {
+  const [reloadKey, setreloadKey] = useState(0);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>('friends');
+  const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'requests'>(openWithTab);
 
   const handleTabChange = (tab: 'friends' | 'groups' | 'requests') => {
     setActiveTab(tab);
@@ -37,6 +39,8 @@ export default function Sidebar({ onChatSelect }: SidebarProps) {
     <>
       <div className="flex flex-col w-96 not-first:bg-stone-900">
         <SidebarItems 
+          key={reloadKey}
+          activeTab={activeTab}
           onChatSelect={onChatSelect} 
           onTabChange={handleTabChange}
         />
@@ -57,7 +61,9 @@ export default function Sidebar({ onChatSelect }: SidebarProps) {
         <AddFriendModal onClose={() => setShowAddFriendModal(false)} />
       )}
       {showCreateGroupModal && (
-        <CreateGroupModal onClose={() => setShowCreateGroupModal(false)} />
+        <CreateGroupModal onClose={() =>{setShowCreateGroupModal(false)
+          setreloadKey(prev => prev+1)
+        }} />
       )}
     </>
   );

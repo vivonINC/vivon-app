@@ -19,7 +19,7 @@ export default function Login() {
     });
 
     const data = await resp.text();
-    if(data === "Account created!"){
+    if(data === "Registration successful"){
       navigate("/")
     }
      //Not safe to store in local storage?

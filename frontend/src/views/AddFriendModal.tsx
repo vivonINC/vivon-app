@@ -29,15 +29,16 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
             : `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, myID: parseInt(id) }),
+        body: JSON.stringify({ username: username, myID: parseInt(id) }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         setError(data.message || "Failed to send friend request.");
         return;
       }
-
+      if(await res.text() === "That user is already your friend"){
+        setError(await res.text())
+      }
       onClose(); // Close modal on success
     } catch (err) {
       setError("Something went wrong. Try again.");

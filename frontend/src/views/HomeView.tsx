@@ -17,24 +17,11 @@ export default function Home() {
       setSelectedChatName(name);
       setSelectedConversationType('group');
     } else if (type === 'friend') {
-      const conversationId = await findOrCreateConversation(id); // id = friendId
+      const conversationId = await findOrCreateConversation(id);
       setSelectedConversationId(conversationId);
       setSelectedChatName(name);
       setSelectedConversationType('friend');
     }
-  };
-
-  const isExistingConversation = async (conversationId: string): Promise<boolean> => {
-    const token = sessionStorage.getItem("token");
-    const userId = sessionStorage.getItem("myID");
-
-    const res = await fetch(`/api/messages/conversationExists?conversationId=${conversationId}&userId=${userId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-
-    return res.ok ? await res.json() : false;
   };
 
   const findOrCreateConversation = async (friendId: string): Promise<number> => {
@@ -79,7 +66,7 @@ export default function Home() {
 
   return (
     <div className="p-8 flex w-screen h-screen relative">
-      <Sidebar onChatSelect={handleChatSelect} />
+      <Sidebar onChatSelect={handleChatSelect} openWithTab= "friends" />
       <TextChat 
         conversationType={selectedConversationType}
         conversationId={selectedConversationId}
