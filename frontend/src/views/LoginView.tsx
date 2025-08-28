@@ -61,11 +61,11 @@ export default function Login() {
         <label htmlFor="password">Password:</label>
         <input className='bg-white text-black' type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-        <button type="submit" className="bg-blue-400 rounded-2xl border border-black w-1/2 mx-auto py-2">
+        <button type="submit" className="bg-blue-400 rounded-2xl border border-black w-1/2 mx-auto py-2 mb-2">
           Login
         </button>
       </form>
-      <button onClick={() => navigate("/register")} className=' mt-2 block w-1/2 mx-auto bg-blue-400 rounded-2xl border border-black'>Registration</button>
+      <a onClick={() => navigate("/register")} className='w-1/2 mx-auto text-blue-400'>Don't have an account? Register here</a>
       <p className='text-red-600 block w-fit h-5 mx-auto'>{error}</p>
     </div>
   );

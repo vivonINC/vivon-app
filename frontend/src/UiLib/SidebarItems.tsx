@@ -80,6 +80,10 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
     }
   };
 
+    const handleFriendRemoved = (removedUserId: string) => {
+    setFriends(prev => prev.filter(friend => friend.id !== removedUserId));
+  };
+
   const fetchGroups = async () => {
     setLoading(true);
     try {
@@ -234,13 +238,14 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
             ) : (
               filteredFriends.map(user => (
                 <SidebarItem
-                  type='friend' //direct or friend?
+                  type='friend'
                   key={user.id}
                   avatar={user.avatar}
                   name={user.userName}
                   isOnline={user.isOnline}
                   userId={user.id}
                   onChatSelect={(userId, userName) => onChatSelect(userId, userName, 'friend')}
+                  onFriendRemoved={handleFriendRemoved} // Add this line
                 />
               ))
             )}
