@@ -33,7 +33,6 @@ export default function TextChat({ conversationId, chatName, conversationType }:
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const previousScrollHeight = useRef<number>(0);
 
-  // Function to scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -52,7 +51,6 @@ export default function TextChat({ conversationId, chatName, conversationType }:
 
     const { scrollTop, scrollHeight, clientHeight } = container;
     
-    // Check if near bottom
     const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
     setShouldScrollToBottom(isNearBottom);
 
@@ -64,7 +62,7 @@ export default function TextChat({ conversationId, chatName, conversationType }:
     }
   }, [hasMoreMessages, isLoadingOlder, loadOlderMessages]);
 
-  // Restore scroll position after loading older messages
+  // Restore scroll pos
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (container && isLoadingOlder === false && previousScrollHeight.current > 0) {
@@ -129,7 +127,7 @@ useEffect(() => {
     console.log('Sending message:', content);
     sendMessage(content);
     setInputText("");
-    setShouldScrollToBottom(true); //scroll to bottom for new messages
+    setShouldScrollToBottom(true); //scroll to bottom for new msg
   };
 
   const addUserToConvo = () => {

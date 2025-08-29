@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { User } from '../types';
 import SidebarItem from './SidebarItem';
 import FriendRequestItem from './FriendRequestItem';
+import avatarPlaceholder from "../assets/avatars/Portrait_Placeholder.png"
 
 interface Group {
   conversation_id: number;
@@ -53,7 +54,6 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
   }, [activeTab]);
 
   // Separate useEffect to fetch friend requests count for badge
-  // This runs once when component mounts to show the notification badge
   useEffect(() => {
     fetchFriendRequests();
   }, []);
@@ -185,7 +185,6 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
     onChatSelect(conversationId, groupName, 'group');
   };
 
-  // Debug logging (this is fine in component body since it doesn't cause side effects)
   console.log('Friend IDs:', filteredFriends.map(f => f.id));
 
   return (
@@ -240,12 +239,12 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
                 <SidebarItem
                   type='friend'
                   key={user.id}
-                  avatar={user.avatar}
+                  avatar={user.avatar ?? avatarPlaceholder}
                   name={user.userName}
                   isOnline={user.isOnline}
                   userId={user.id}
                   onChatSelect={(userId, userName) => onChatSelect(userId, userName, 'friend')}
-                  onFriendRemoved={handleFriendRemoved} // Add this line
+                  onFriendRemoved={handleFriendRemoved} 
                 />
               ))
             )}
@@ -263,7 +262,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
                 <SidebarItem
                   type='group'
                   key={group.conversation_id}
-                  avatar={"temp"} // Groups might not have avatars, or you can add a default group avatar
+                  avatar={avatarPlaceholder}
                   name={group.conversation_name}
                   userId={group.conversation_id.toString()}
                   onChatSelect={handleGroupSelect}

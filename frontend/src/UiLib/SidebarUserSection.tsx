@@ -1,15 +1,16 @@
 import { MicrophoneIcon, HeadphonesIcon, GearSixIcon } from '@phosphor-icons/react';
 import { IconButton } from './IconButton';
+import avatarPlaceholder from "../assets/avatars/Portrait_Placeholder.png";
+
 
 export default function SidebarUserSection() {
   return (
     <div className="p-2 bg-stone-800/50 rounded-md">
       <div className="flex items-center gap-2">
-        {/* Avatar and Name */}
         <div className="flex items-center gap-2 flex-1">
           <div className="relative">
             <div className="w-8 h-8 rounded-full bg-stone-700">
-              {/* Avatar image would go here */}
+              <img src={avatarPlaceholder} alt="avatar" className='rounded-full' />
             </div>
             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-stone-900" />
           </div>
