@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoginView from "./views/LoginView.tsx";
 import Home from './views/HomeView.tsx';
-import TestPage from './views/TestPage.tsx';
 import Register  from './views/RegisterView.tsx';
 
 const queryClient = new QueryClient({
@@ -23,7 +22,6 @@ function App() {
             <Route path="/" element={<LoginView/>} />
             <Route path = "/register" element={<Register/>} />
             <Route path = "/home" element={<Home/>} />
-            <Route path = "/testPage" element={<TestPage/>} />
           </Routes>
         </main>
       </div>

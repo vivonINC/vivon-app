@@ -7,6 +7,7 @@ export default defineConfig({
   base: './', // Important for Electron
   build: {
     outDir: 'dist',
+    sourcemap: true,
   },
   server: {
     open: false,

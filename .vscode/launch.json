@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug Vite + React App",
+      "url": "http://localhost:5173", // Default for Vite
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "trace": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
