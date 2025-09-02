@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api.ts';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function Login() {
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault(); // Prevent page reload
 
-    const resp = await fetch('/api/auth/register', {
+    const resp = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

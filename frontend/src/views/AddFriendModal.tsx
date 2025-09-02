@@ -1,5 +1,6 @@
 // AddFriendModal.tsx
 import { useState } from "react";
+import { API_BASE_URL } from '../config/api.ts';
 
 interface AddFriendModalProps {
   onClose: () => void;
@@ -21,7 +22,7 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
     }
 
     try {
-      const res = await fetch("/api/users/sendFriendRequest", {
+      const res = await fetch(`${API_BASE_URL}/api/users/sendFriendRequest`, {
         method: "POST",
         headers: {
           "Authorization": token.startsWith("Bearer ")

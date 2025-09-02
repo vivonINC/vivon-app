@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from '../config/api.ts';
 
 interface User {
   id: string;
@@ -27,7 +28,7 @@ export default function AddUserToGroupModal({ conversationId, onClose }: AddUser
     try {
       const token = sessionStorage.getItem("token");
 
-      const response = await fetch('/api/users/friends', {
+      const response = await fetch(`${API_BASE_URL}/api/users/friends`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },

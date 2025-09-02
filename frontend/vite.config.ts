@@ -2,28 +2,35 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 const tailwindcss = (await import('@tailwindcss/vite')).default;
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
-  base: './', // Important for Electron
+  base: './',
   build: {
     outDir: 'dist',
     sourcemap: true,
   },
   server: {
     open: false,
-    proxy: {
-      '/auth': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path, // Ensure path isn't modified
+    // Only use proxy in development
+    ...(mode === 'development' && {
+      proxy: {
+        '/auth': {
+          target: 'http://localhost:8080',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path,
+        },
+        '/api': {
+          target: 'http://localhost:8080',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/ws': {
+          target: 'http://localhost:8080',
+          changeOrigin: true,
+          ws: true, // Enable WebSocket proxying
+        },
       },
-      // You might also want to proxy other API routes
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+    }),
   },
-});
+}));

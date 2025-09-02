@@ -1,5 +1,8 @@
 // Custom hook for WebSocket with infinite scroll
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { WS_BASE_URL } from './config/api.ts';
+import { API_BASE_URL } from './config/api.ts';
+
 
 export interface Message {
   id?: number;
@@ -45,7 +48,7 @@ export const useWebSocket = (conversationId: number | null) => {
 
     // Create WebSocket connection
     const token = sessionStorage.getItem("token");
-    const ws = new WebSocket(`ws://localhost:8080/ws/chat?token=${token}`);
+    const ws = new WebSocket(`${WS_BASE_URL}/ws/chat?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -179,7 +182,7 @@ export const useWebSocket = (conversationId: number | null) => {
     };
     const token = sessionStorage.getItem("token");
 
-    fetch("/api/messages/send", {
+    fetch(`${API_BASE_URL}/api/messages/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -222,7 +225,7 @@ export const useWebSocket = (conversationId: number | null) => {
     try {
       console.log('Loading initial messages for conversation:', conversationId);
       const token = sessionStorage.getItem("token");
-      const response = await fetch(`/api/messages/last25?conversationID=${conversationId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages/last25?conversationID=${conversationId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -259,7 +262,7 @@ export const useWebSocket = (conversationId: number | null) => {
       
       console.log('Loading older messages before:', beforeTimestamp);
       const token = sessionStorage.getItem("token");
-      const response = await fetch(`/api/messages/before?conversationID=${conversationId}&beforeTimestamp=${encodeURIComponent(beforeTimestamp)}&limit=25`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages/before?conversationID=${conversationId}&beforeTimestamp=${encodeURIComponent(beforeTimestamp)}&limit=25`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

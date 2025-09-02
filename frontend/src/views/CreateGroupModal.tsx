@@ -1,5 +1,6 @@
 // CreateGroupModal.tsx
 import { useState } from "react";
+import { API_BASE_URL } from '../config/api.ts';
 
 interface CreateGroupModalProps {
   onClose: () => void;
@@ -21,7 +22,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
     }
 
     try {
-      const res = await fetch(`/api/messages/createConversation?type=group&name=${groupName}&ids=${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/messages/createConversation?type=group&name=${groupName}&ids=${id}`, {
         method: "POST",
         headers: {
           "Authorization": token.startsWith("Bearer ")

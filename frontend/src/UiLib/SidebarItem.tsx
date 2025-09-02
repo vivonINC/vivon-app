@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DotsThreeVerticalIcon } from '@phosphor-icons/react';
 import { IconButton } from "./IconButton";
+import { API_BASE_URL } from '../config/api.ts';
 
 interface SidebarItemProps {
   avatar: string;
@@ -49,7 +50,7 @@ export default function SidebarItem({
       const token = sessionStorage.getItem("token");
       const myID = sessionStorage.getItem("myID");
       
-      const response = await fetch(`/api/users/getFriendDescription?fromID=${myID}&toID=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/getFriendDescription?fromID=${myID}&toID=${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -72,7 +73,7 @@ export default function SidebarItem({
       const token = sessionStorage.getItem("token");
       const myID = sessionStorage.getItem("myID");
       
-      const response = await fetch(`/api/users/removeFriend?fromID=${myID}&toID=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/removeFriend?fromID=${myID}&toID=${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -106,7 +107,7 @@ export default function SidebarItem({
       const token = sessionStorage.getItem("token");
       const myID = sessionStorage.getItem("myID");
       
-      const response = await fetch('/api/users/addDescription', {
+      const response = await fetch('${API_BASE_URL}/api/users/addDescription', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -121,7 +122,6 @@ export default function SidebarItem({
 
       if (response.ok) {
         console.log('Description updated successfully');
-        // TODO: Show success message or update UI
       } else {
         console.error('Failed to update description');
       }

@@ -3,6 +3,7 @@ import type { User } from '../types';
 import SidebarItem from './SidebarItem';
 import FriendRequestItem from './FriendRequestItem';
 import avatarPlaceholder from "../assets/avatars/Portrait_Placeholder.png"
+import { API_BASE_URL } from '../config/api.ts';
 
 interface Group {
   conversation_id: number;
@@ -63,7 +64,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
     try {
       const token = sessionStorage.getItem("token");
 
-      const response = await fetch('/api/users/friends', {
+      const response = await fetch(`${API_BASE_URL}/api/users/friends`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -90,7 +91,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
       const token = sessionStorage.getItem("token");
       const currentUserId = sessionStorage.getItem("myID");
 
-      const response = await fetch(`/api/messages/getConversationGroups?userID=${currentUserId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages/getConversationGroups?userID=${currentUserId}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -113,7 +114,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
       const token = sessionStorage.getItem("token");
       const currentUserId = sessionStorage.getItem("myID");
 
-      const response = await fetch(`/api/users/incFriendRequests?id=${currentUserId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/incFriendRequests?id=${currentUserId}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -135,7 +136,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
       const token = sessionStorage.getItem("token");
       const currentUserId = sessionStorage.getItem("myID");
 
-      const response = await fetch('/api/users/acceptFriendRequest', {
+      const response = await fetch(`${API_BASE_URL}/api/users/acceptFriendRequest`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -161,7 +162,7 @@ export default function SidebarItems({ onChatSelect, onTabChange, activeTab }: S
       const token = sessionStorage.getItem("token");
       const currentUserId = sessionStorage.getItem("myID");
 
-      const response = await fetch('/api/users/declineFriendRequest', {
+      const response = await fetch(`${API_BASE_URL}/api/users/declineFriendRequest`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${token}`,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./SidebarView";
 import TextChat from "./TextChat";
+import { API_BASE_URL } from '../config/api.ts';
 
 export default function Home() {
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
@@ -30,7 +31,7 @@ export default function Home() {
       const currentUserId = sessionStorage.getItem("myID");
 
       // First, try to find existing conversation
-      const response = await fetch(`/api/messages/getDirectConversations?userID=${currentUserId}&friendID=${friendId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages/getDirectConversations?userID=${currentUserId}&friendID=${friendId}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -41,7 +42,7 @@ export default function Home() {
         
         if (conversation == null) {
           // If no conversation exists, create one
-          const createResponse = await fetch(`/api/messages/createConversation?type=direct&name=placeholderName&ids=${currentUserId},${friendId}`, {
+          const createResponse = await fetch(`${API_BASE_URL}/api/messages/createConversation?type=direct&name=placeholderName&ids=${currentUserId},${friendId}`, {
             method: 'POST',
             headers: {
               "Authorization": `Bearer ${token}`,
