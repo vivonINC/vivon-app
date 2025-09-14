@@ -19,6 +19,7 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
 
     if(username === myUsername){
           setError("You can't befriend yourself")
+          return;
     }
 
     if (!token || !id) {
