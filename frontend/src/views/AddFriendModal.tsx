@@ -15,6 +15,11 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
 
     const token = sessionStorage.getItem("token");
     const id = sessionStorage.getItem("myID");
+    const myUsername = sessionStorage.getItem("username");
+
+    if(username === myUsername){
+          setError("You can't befriend yourself")
+    }
 
     if (!token || !id) {
       setError("Authentication error. Please log in again.");
@@ -30,7 +35,7 @@ export default function AddFriendModal({ onClose }: AddFriendModalProps) {
             : `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: username, myID: parseInt(id) }),
+        body: JSON.stringify({ username: username, myID: parseInt(id), myUsername: myUsername }),
       });
       if (!res.ok) {
         const data = await res.json();
