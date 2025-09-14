@@ -4,7 +4,7 @@ const tailwindcss = (await import('@tailwindcss/vite')).default;
 
 export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
-  base: './',
+  base: '/',
   build: {
     outDir: 'dist',
     sourcemap: true,
