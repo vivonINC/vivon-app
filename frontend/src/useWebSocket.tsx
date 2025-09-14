@@ -72,53 +72,28 @@ export const useWebSocket = (conversationId: number | null) => {
       currentConversationRef.current = conversationId;
     };
 
-    ws.onmessage = (event) => {
-      const newMessage = JSON.parse(event.data);
-      console.log('Received WebSocket message:', newMessage);
-      
-      // Only process messages for the current conversation
-      if (currentConversationRef.current !== conversationId) {
-        console.log('Message for different conversation, ignoring');
-        return;
+  ws.onmessage = (event) => {
+    const newMessage = JSON.parse(event.data);
+    console.log('Received WebSocket message:', newMessage);
+    
+    // Only process messages for the current conversation
+    if (currentConversationRef.current !== conversationId) {
+      console.log('Message for different conversation, ignoring');
+      return;
+    }
+    
+    setMessages(prev => {
+      // Check for exact duplicate by ID only
+      const existsByID = prev.some(msg => msg.id === newMessage.id);
+      if (existsByID) {
+        console.log('Message already exists by ID, skipping');
+        return prev;
       }
       
-      setMessages(prev => {
-        // Check if this message already exists (avoid duplicates)
-        const exists = prev.some(msg => 
-          msg.id === newMessage.id || 
-          (msg.content === newMessage.content && 
-           msg.sender_id === newMessage.sender_id && 
-           Math.abs(new Date(msg.created_at).getTime() - new Date(newMessage.created_at).getTime()) < 10000)
-        );
-        
-        if (exists) {
-          console.log('Duplicate message detected, skipping');
-          return prev;
-        }
-        
-        // If this is our own message coming back via WebSocket, replace any optimistic version
-        const myID = parseInt(sessionStorage.getItem("myID") ?? "1");
-        if (newMessage.sender_id === myID) {
-          // Find and replace optimistic message with the real one
-          const optimisticIndex = prev.findIndex(msg => 
-            msg.id && msg.id > 1000000000000 && // Temporary ID (timestamp)
-            msg.content === newMessage.content &&
-            msg.sender_id === newMessage.sender_id
-          );
-          
-          if (optimisticIndex !== -1) {
-            const updatedMessages = [...prev];
-            updatedMessages[optimisticIndex] = newMessage;
-            pendingOptimisticMessages.current.delete(prev[optimisticIndex].id as number);
-            console.log('Replaced optimistic message with real message');
-            return updatedMessages;
-          }
-        }
-        
-        console.log('Adding new message to conversation');
-        return [...prev, newMessage];
-      });
-    };
+      console.log('Adding new message to conversation');
+      return [...prev, newMessage];
+    });
+  };
 
     ws.onclose = () => {
       console.log('WebSocket disconnected');
@@ -145,80 +120,47 @@ export const useWebSocket = (conversationId: number | null) => {
     };
   }, [conversationId]);
 
-  // Function to send message
-  const sendMessage = (content: string) => {
-    if (!conversationId || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-      console.log('Cannot send message: no conversation or WebSocket not ready');
-      return;
-    }
+// Function to send message (no optimistic updates)
+const sendMessage = (content: string) => {
+  if (!conversationId || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+    console.log('Cannot send message: no conversation or WebSocket not ready');
+    return;
+  }
 
-    const myID = parseInt(sessionStorage.getItem("myID") ?? "1");
-    const username = sessionStorage.getItem("username") ?? "You";
-    const optimisticId = Date.now(); // Temporary ID
-    
-    const optimisticMessage: Message = {
-      id: optimisticId,
-      sender_id: myID,
-      content: content,
-      created_at: new Date().toISOString(),
-      username: username,
-      avatar: sessionStorage.getItem("avatar"),
-      type: "TEXT"
-    };
-
-    // Track this optimistic message
-    pendingOptimisticMessages.current.add(optimisticId);
-
-    // Immediately add message to UI (optimistic update)
-    setMessages(prev => [...prev, optimisticMessage]);
-    console.log('Added optimistic message:', optimisticMessage);
-    
-    const message = {
-      sender_id: myID,
-      content: content,
-      created_at: new Date().toISOString(),
-      type: "TEXT",
-      conversation_id: conversationId
-    };
-    const token = sessionStorage.getItem("token");
-
-    fetch(`${API_BASE_URL}/api/messages/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(message)
-    })
-    .then(response => {
-      if (!response.ok) {
-        console.log("Failed to send message");
-        // Remove optimistic message on failure
-        setMessages(prev => prev.filter(msg => msg.id !== optimisticId));
-        pendingOptimisticMessages.current.delete(optimisticId);
-        throw new Error('Failed to send message');
-      }
-      return response.json();
-    })
-    .then(savedMessage => {
-      console.log('Message saved successfully:', savedMessage);
-      // Replace optimistic message with actual saved message
-      setMessages(prev => prev.map(msg => 
-        msg.id === optimisticId ? {
-          ...savedMessage,
-          username: username,
-          avatar: optimisticMessage.avatar
-        } : msg
-      ));
-      pendingOptimisticMessages.current.delete(optimisticId);
-    })
-    .catch(error => {
-      console.error('Error sending message:', error);
-      // Remove optimistic message on error
-      setMessages(prev => prev.filter(msg => msg.id !== optimisticId));
-      pendingOptimisticMessages.current.delete(optimisticId);
-    });
+  const myID = parseInt(sessionStorage.getItem("myID") ?? "1");
+  
+  const message = {
+    sender_id: myID,
+    content: content,
+    created_at: new Date().toISOString(),
+    type: "TEXT",
+    conversation_id: conversationId
   };
+  const token = sessionStorage.getItem("token");
+
+  fetch(`${API_BASE_URL}/api/messages/send`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(message)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+    return response.json();
+  })
+  .then(savedMessage => {
+    console.log('Message saved successfully:', savedMessage);
+    // No optimistic update - just wait for WebSocket message
+  })
+  .catch(error => {
+    console.error('Error sending message:', error);
+    // You could show an error message to the user here if needed
+  });
+};
 
   // Load initial messages (newest 25)
   const loadInitialMessages = useCallback(async (conversationId: number) => {
