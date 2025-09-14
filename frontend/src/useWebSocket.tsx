@@ -88,7 +88,7 @@ export const useWebSocket = (conversationId: number | null) => {
           msg.id === newMessage.id || 
           (msg.content === newMessage.content && 
            msg.sender_id === newMessage.sender_id && 
-           Math.abs(new Date(msg.created_at).getTime() - new Date(newMessage.created_at).getTime()) < 1000)
+           Math.abs(new Date(msg.created_at).getTime() - new Date(newMessage.created_at).getTime()) < 10000)
         );
         
         if (exists) {
