@@ -67,7 +67,7 @@ export default function AddUserToGroupModal({ conversationId, onClose }: AddUser
     setError("");
 
     try {
-      const res = await fetch(`/api/messages/addToConv`, {
+      const res = await fetch(`${API_BASE_URL}/api/messages/addToConv`, {
         method: "POST",
         headers: {
           "Authorization": token.startsWith("Bearer ")

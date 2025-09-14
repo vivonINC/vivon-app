@@ -107,7 +107,7 @@ export default function SidebarItem({
       const token = sessionStorage.getItem("token");
       const myID = sessionStorage.getItem("myID");
       
-      const response = await fetch('${API_BASE_URL}/api/users/addDescription', {
+      const response = await fetch(`${API_BASE_URL}/api/users/addDescription`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
