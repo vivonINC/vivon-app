@@ -30,7 +30,7 @@ export default function Home() {
       const token = sessionStorage.getItem("token");
       const currentUserId = sessionStorage.getItem("myID");
 
-      // First, try to find existing conversation
+      // First find existing conversation
       const response = await fetch(`${API_BASE_URL}/api/messages/getDirectConversations?userID=${currentUserId}&friendID=${friendId}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default function Home() {
         const conversation = await response.json();
         
         if (conversation == null) {
-          // If no conversation exists, create one
+          // If no conversation exists create one
           const createResponse = await fetch(`${API_BASE_URL}/api/messages/createConversation?type=direct&name=placeholderName&ids=${currentUserId},${friendId}`, {
             method: 'POST',
             headers: {

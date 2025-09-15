@@ -23,7 +23,6 @@ export default function Login() {
     if(data === "Registration successful"){
       navigate("/")
     }
-     //Not safe to store in local storage?
      setResponse(data);
   };
 

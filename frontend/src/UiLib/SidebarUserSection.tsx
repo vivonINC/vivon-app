@@ -19,7 +19,6 @@ export default function SidebarUserSection() {
           </div>
         </div>
 
-        {/* Controls */}
         <div className="flex gap-1">
           <IconButton
             icon={MicrophoneIcon}

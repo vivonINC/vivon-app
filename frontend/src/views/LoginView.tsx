@@ -49,7 +49,6 @@ export default function Login() {
     else{
       setError('Not a valid login')
     }
-     //Not safe to store token in local storage?
   };
 
   return (

@@ -142,11 +142,10 @@ export default function SidebarItem({
         isExpanded ? 'bg-stone-800' : 'hover:bg-stone-800'
       }`}
     >
-      {/* Main item row */}
       <div
         onClick={handleChatClick}
         onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)} // Fixed: was true, should be false
+        onMouseLeave={() => setIsHovering(false)}
         className="flex items-center gap-2 px-2 py-2 cursor-pointer"
       >
         <div className="relative">

@@ -76,7 +76,6 @@ export const useWebSocket = (conversationId: number | null) => {
     const newMessage = JSON.parse(event.data);
     console.log('Received WebSocket message:', newMessage);
     
-    // Only process messages for the current conversation
     if (currentConversationRef.current !== conversationId) {
       console.log('Message for different conversation, ignoring');
       return;
@@ -115,12 +114,11 @@ export const useWebSocket = (conversationId: number | null) => {
       }
       ws.close();
       wsRef.current = null;
-      // Clear pending optimistic messages
+      //not used anymore
       pendingOptimisticMessages.current.clear();
     };
   }, [conversationId]);
 
-// Function to send message (no optimistic updates)
 const sendMessage = (content: string) => {
   if (!conversationId || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
     console.log('Cannot send message: no conversation or WebSocket not ready');
@@ -154,11 +152,9 @@ const sendMessage = (content: string) => {
   })
   .then(savedMessage => {
     console.log('Message saved successfully:', savedMessage);
-    // No optimistic update - just wait for WebSocket message
   })
   .catch(error => {
     console.error('Error sending message:', error);
-    // You could show an error message to the user here if needed
   });
 };
 
@@ -189,7 +185,7 @@ const sendMessage = (content: string) => {
     }
   }, []);
 
-  // Load older messages for infinite scroll
+  // Load older msg
   const loadOlderMessages = useCallback(async () => {
     if (!conversationId || isLoadingOlder || !hasMoreMessages || messages.length === 0) {
       return;
@@ -198,7 +194,7 @@ const sendMessage = (content: string) => {
     setIsLoadingOlder(true);
     
     try {
-      // Get timestamp of the oldest message
+      // Get timestamp of oldest message
       const oldestMessage = messages[0];
       const beforeTimestamp = oldestMessage.created_at;
       
