@@ -16,15 +16,13 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen">
-        <main className="min-h-screen bg-stone-950 text-white">
+        <main className="min-h-screen bg-stone-950 text-white flex items-center justify-center">
           <Routes>
             <Route path="/" element={<LoginView/>} />
             <Route path = "/register" element={<Register/>} />
             <Route path = "/home" element={<Home/>} />
           </Routes>
         </main>
-      </div>
     </QueryClientProvider>
   )
 }

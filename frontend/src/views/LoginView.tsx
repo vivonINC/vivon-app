@@ -52,20 +52,20 @@ export default function Login() {
   };
 
   return (
-    <div className="w-1/4 h-3/4 bg-gray-400 p-4 rounded-lg shadow-lg mx-auto mt-20">
-      <h1 className="text-xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <label htmlFor="email">Email:</label>
-        <input className='bg-white text-black' type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className="w-1/4 bg-gray-500 p-4 rounded-lg shadow-lg mx-auto my-auto mt-20">
+      <h1 className="text-xl font-bold mb-4 text-center ">Login</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <label className="mb-1" htmlFor="email">Email:</label>
+        <input className='bg-white rounded-sm text-black' type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 
-        <label htmlFor="password">Password:</label>
-        <input className='bg-white text-black' type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <label className='mt-3 mb-1' htmlFor="password">Password:</label>
+        <input className='bg-white rounded-sm text-black' type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-        <button type="submit" className="bg-blue-400 rounded-2xl border border-black w-1/2 mx-auto py-2 mb-2">
+        <button type="submit" className="mt-5 bg-blue-400 rounded-2xl border border-black w-1/2 mx-auto py-2 mb-2">
           Login
         </button>
       </form>
-      <a onClick={() => navigate("/register")} className='w-1/2 mx-auto text-blue-400'>Don't have an account? Register here</a>
+      <a onClick={() => navigate("/register")} className='w-1/2 mx-auto'>Don't have an account? <p className='text-blue-700 inline'>Register here</p> </a>
       <p className='text-red-600 block w-fit h-5 mx-auto'>{error}</p>
     </div>
   );

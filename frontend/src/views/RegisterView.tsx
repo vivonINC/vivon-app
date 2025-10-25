@@ -27,18 +27,17 @@ export default function Login() {
   };
 
   return (
-    <div className="w-1/4 h-3/4 bg-gray-400 p-4 rounded-lg shadow-lg mx-auto mt-20">
-      <h1 className="text-xl font-bold mb-4">Register</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <div className="w-1/4 h-3/4 bg-gray-500 p-4 rounded-lg shadow-lg mx-auto my-auto mt-20">
+      <h1 className="text-xl font-bold mb-4 text-center">Register</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col">
         <label htmlFor="username">Username:</label>
-        <input className='bg-white text-black' type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input className='mt-1 mb-3 bg-white rounded-sm text-black' type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
 
         <label htmlFor="email">Email:</label>
-        <input className='bg-white text-black' type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-
+        <input className='mt-1 mb-3 bg-white rounded-sm text-black' type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 
         <label htmlFor="password">Password:</label>
-        <input className='bg-white text-black' type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input className='mt-1 mb-5 bg-white rounded-sm text-black' type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
         <button type="submit" className="bg-blue-400 rounded-2xl border border-black w-1/2 mx-auto py-2">
           Register
